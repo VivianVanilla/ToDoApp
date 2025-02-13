@@ -4,20 +4,81 @@
     <meta charset="UTF-8" />
     <link href="./src/output.css" rel="stylesheet">
     <title>Stuff To Do</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
+      integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous" />
+    <script src="scripts/index.js" defer> </script>
 </head>
-<body>  
-    <div class="flex justify-between">
-        <div class="flex gap-3"><button class= "cursor-pointer">Add a group</button><button class= "cursor-pointer">Delete This Group</button>
+<body class="flex bg-slate-900 text-white w-screen h-screen">
+
+
+  <div class="flex flex-col">
+    <div class=" flex flex-col bg-amber-200 h-screen">
+      <div class="flex gap-3"><button class="cursor-pointer">Add a group</button></div>
+
+      <div class="flex gap-3"><button class="select-none cursor-pointer" onclick=""> Add a Task</button>
+        <button class="cursor-pointer">Clear Tasks</button>
+      </div>
+    </div>
+
+
+
+    <div>
+      <h2> </h2>
+    </div>
+  </div>
+
+  </div>
+
+  <main data-sticky-container class="main w-screen h-screen flex flex-col relative">
+
+
+    <div id="addtask"
+      class=" position absolute p-5 border white 5px bg-white text-black w-1/2 m-auto self-center flex flex-col">
+      <input id="title" type="text" placeholder="Title of your thing!">
+      <input id="task" type="text" placeholder="Write Something!">
+      <label for="color"> Sticky Color </label>
+      <input id="color" type="color" class="colorPicker"> </input>
+      <label for="text-color"> Text Color </label>
+      <select id="text-color" class="">
+        <option>black</option>
+        <option>white</option>
+
+      </select>
+
+    </div>
+    <div class="w-max h-max">
+
+
+  </main>
+  <template data-sticky-template class="">
+
+    <div draggable="" id="wrapper" class=" text-black bg-gray-100 wrapper w-[26%] h-[9/10] rounded-2xl absolute">
+      <div id="header" class="p-6 border-gray-300 text-xl flex justify-between cursor-move">
+        <span data-title class="select-none"> Window </span>
+        <div id="actions" class="flex gap-3 cursor-pointer">
+          <i class="fa fa-sliders-h"></i>
+          <i class="fa fa-minus" onclick="toggleMinimize(event)"></i>
         </div>
-        <div class="flex gap-3"><button class= "cursor-pointer"> Add a Task</button><button class= "cursor-pointer">Clear Tasks</button>
+      </div>
+
+
+      <div class=" content p-6 text-center rounded-full hidden">
+        <div class="m-auto mb-4 rounded-full w-[70px] h-[70px] border-2 flex items-center justify-center ">
+          <input type="checkbox" class="" data-checkbox></input>
+          <i class=""> </i>
+        </div>
+        <div class="overflow-auto">
+          <p data-text class="mb-10 select-none ">
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Id, quas
+            blanditiis ratione, veniam nobis inventore qui minus nesciunt unde
+            rerum, voluptatum error. Perspiciatis laborum repellat eveniet atque
+            voluptatem ipsum cum.
+          </p>
         </div>
     </div>
-   <!--  <template> -->
-    <div class="flex"> 
-        <input type="checkbox" class=""></input><h2 data-title>title filler</h2> <button type="button" class="bg-amber-100 cursor-pointer">Dropdown</button><button class="cursor-pointer bg-blue-400">Delete Task</button> <button class="cursor-pointer bg-lime-400">Edit Task</button>
     </div>
-    <div class="bg-gray-600"> <h1 class="text-white"> Description </h1><p  class="bg-gray-300"  data-description> BLAH BLAH BLAH BLAH </p> </div>
-<!-- </template> -->
+</template>
+</div>
 
     
 </body>
