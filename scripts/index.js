@@ -7,17 +7,19 @@ const mainRect = document.querySelector(".main").getBoundingClientRect();
 let data = [{checkbox: "true",
     title:"MEOW",
     bgcolor: "#FFFFFF",
+    textcolor: "black",
     content: "I need to finish my to do APP!" ,
 } , {checkbox: "false",
     title:"BARK",
     bgcolor: "#985757",
     content: "I HATE CSS" ,
-    
+    textcolor: "black",
 } ,
 {checkbox: "false",
     title:"beep",
     bgcolor: "#985097",
     content: "I HATE CSS" ,
+    textcolor: "white",
 }];
 
 
@@ -78,9 +80,19 @@ const checkbox = task.querySelector("[data-checkbox]");
 const title = task.querySelector("[data-title]"); 
 const text = task.querySelector("[data-text]");
 
-
 task.style.backgroundColor = `${info.bgcolor}`;
-  
+task.classList.add(`text-${info.textcolor}`)
+function checkBoxBG(color) {
+    if (color === "white") {
+        let bg = task.querySelector(".checkbox")
+        bg.classList.remove("checked:bg-black")
+        bg.classList.remove("bg-gray-700")
+        bg.classList.add("bg-gray-400")
+        bg.classList.add("checked:bg-white")
+    } else {
+    }
+}
+ checkBoxBG(info.textcolor)
 
 checkbox.checked= (info.checkbox === "true");
 title.textContent = info.title;
@@ -103,7 +115,7 @@ return{checkbox: info.checkbox, title: info.title, element:task}
 }
 
 function toggleMinimize(event) {
-    let wrapper = event.target.closest("#wrapper"); 
+    let wrapper = event.target.closest("#wrapper");
     let content = wrapper.querySelector(".content");
     let header = wrapper.querySelector("#header");
     if (content) {
@@ -113,6 +125,52 @@ function toggleMinimize(event) {
     if (header) {
         header.classList.toggle("border-b")
     }
+}
+
+function completedBox(event) {
+    let wrapper = event.target.closest("#wrapper");
+    let checkbox = wrapper.querySelector(".checkbox").checked;
+if (checkbox === true ) {
+    wrapper.classList.add("opacity-50")
+    
+} else if (checkbox === false) {
+    wrapper.classList.remove("opacity-50")
+}
+console.log(checkbox)
+}
+
+
+function saveNewData() {
+let title = document.getElementById("title").value;
+let content = document.getElementById("task").value;
+let bgcolor = document.getElementById("color").value;
+let textColor = document.getElementById("text-color").value;
+let checkbox = "false";
+
+    class NewData { 
+        constructor(checkbox, title, content, bgcolor, textColor) {
+           this.checkbox = checkbox;
+           this.title = title;
+           this.content = content;
+           this.bgcolor = bgcolor
+           this.textcolor = textColor
+
+        }
+    }
+
+let tempData = new NewData(checkbox, title, content, bgcolor, textColor)
+ console.log(tempData)
+ data.push(tempData)
+
+ populate(tempData)
+
+function reset() {
+
+    document.getElementById("title").value = "";
+    document.getElementById("task").value = "";
+    document.getElementById("color").value = "#000000";
+    document.getElementById("text-color").value = "black"; }
+reset()
 }
 
 window.addEventListener("load", () => {runData()});

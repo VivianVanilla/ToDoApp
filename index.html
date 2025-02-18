@@ -8,14 +8,14 @@
       integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous" />
     <script src="scripts/index.js" defer> </script>
 </head>
-<body class="flex bg-slate-900 text-white w-screen h-screen">
+<body class="flex bg-[#1A0629] text-white w-screen h-screen">
 
 
-  <div class="flex flex-col">
-    <div class=" flex flex-col bg-amber-200 h-screen">
+  <div class="flex flex-col  ">
+    <div class=" flex flex-col bg-[#533767] h-screen justify-between">
       <div class="flex gap-3"><button class="cursor-pointer">Add a group</button></div>
 
-      <div class="flex gap-3"><button class="select-none cursor-pointer" onclick=""> Add a Task</button>
+      <div class="flex gap-3 flex-col"><button class="select-none cursor-pointer" onclick="runData()"> Add a Task</button>
         <button class="cursor-pointer">Clear Tasks</button>
       </div>
     </div>
@@ -33,17 +33,17 @@
 
 
     <div id="addtask"
-      class=" position absolute p-5 border white 5px bg-white text-black w-1/2 m-auto self-center flex flex-col">
-      <input id="title" type="text" placeholder="Title of your thing!">
+      class=" bg-[#6D5281]  gap-3 position absolute p-5 border white 5px text-black w-1/2 m-auto self-center flex flex-col">
+      <input id="title" type="text" maxlength="18" placeholder="Title your thing!">
       <input id="task" type="text" placeholder="Write Something!">
       <label for="color"> Sticky Color </label>
       <input id="color" type="color" class="colorPicker"> </input>
       <label for="text-color"> Text Color </label>
       <select id="text-color" class="">
-        <option>black</option>
-        <option>white</option>
-
+        <option id="white " value="white">white</option>
+        <option id="black" value="black">black</option>
       </select>
+        <input type="submit" onclick="saveNewData()" class=" border-black border-2 cursor-pointer active:bg-amber-100">
 
     </div>
     <div class="w-max h-max">
@@ -52,10 +52,21 @@
   </main>
   <template data-sticky-template class="">
 
-    <div draggable="" id="wrapper" class=" text-black bg-gray-100 wrapper w-[26%] h-[9/10] rounded-2xl absolute">
+    <div draggable="" id="wrapper" class=" bg-gray-100 wrapper w-[26%] h-[9/10] rounded-2xl absolute">
       <div id="header" class="p-6 border-gray-300 text-xl flex justify-between cursor-move">
         <span data-title class="select-none"> Window </span>
         <div id="actions" class="flex gap-3 cursor-pointer">
+<div class=" rounded-sm w-[1em] h-[1em] border-2 flex items-center justify-center ">
+  <svg class="
+    absolute 
+    w-4 h-4 mt-1
+    hidden peer-checked:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </svg> <input type="checkbox" value="0" onclick="completedBox(event)" class="checkbox  checked:bg-black checked:border-0 w-full h-full border-1
+    rounded-sk bg-gray-700 cursor-pointer appearance-none " data-checkbox></input>
+</div>
+
           <i class="fa fa-sliders-h"></i>
           <i class="fa fa-minus" onclick="toggleMinimize(event)"></i>
         </div>
@@ -63,10 +74,7 @@
 
 
       <div class=" content p-6 text-center rounded-full hidden">
-        <div class="m-auto mb-4 rounded-full w-[70px] h-[70px] border-2 flex items-center justify-center ">
-          <input type="checkbox" class="" data-checkbox></input>
-          <i class=""> </i>
-        </div>
+        
         <div class="overflow-auto">
           <p data-text class="mb-10 select-none ">
             Lorem ipsum dolor sit amet consectetur, adipisicing elit. Id, quas
