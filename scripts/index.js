@@ -12,37 +12,25 @@ const deleteTasksMenu = document.getElementById("deleteTasks")
 let editingSticky = null;
 
 
-let groups = [{groupName: "Evi"},
-    {groupName: "good"},
+let groups = [
 ]
 
 
-let data = [{
-    group: "Evi",
-    posX: 330,
-    posY: 312,
-    checkbox: "true",
-    title:"MEOW",
-    bgcolor: "#FFFFFF",
-    textcolor: "black",
-    content: "I need to finish my to do APP!" ,
-} , { 
-    group: "Evi",
-    checkbox: "false",
-    title:"BARK",
-    bgcolor: "#985757",
-    content: "I HATE CSS" ,
-    textcolor: "black",
-} ,
-{ 
-    group: "good",  
-    checkbox: "false",
-    title:"beep",
-    bgcolor: "#985097",
-    content: "I HATE CSS" ,
-    textcolor: "white",
-}];
+let data = [];
 
+
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(data));
+    localStorage.setItem("groups", JSON.stringify(groups));
+    
+}
+
+function getTasks() {
+    data = JSON.parse(localStorage.getItem("tasks"));
+    groups = JSON.parse(localStorage.getItem("groups"));
+    console.log(groups)
+
+}
 
 
 //Population and Movement
@@ -111,6 +99,7 @@ function groupPopulating(info) {
 }
 
  function runData() { 
+    getTasks()
     data.forEach(populate)
     groups.forEach(groupPopulating)
     boxOpacity() 
@@ -216,13 +205,14 @@ let task = data.find(task => task.title === title);
 
 task.checkbox = checkbox.toString();
 
-
+saveTasks()
 }
 
 function removeAll() { 
     while (stickyContainer.firstChild) {
         stickyContainer.removeChild(stickyContainer.firstChild);
 }
+saveTasks()
 }
 
 let lastClickedGroup = "All"; 
@@ -268,6 +258,7 @@ function editSticky(task, info) {
     document.getElementById("text-color").value = info.textcolor;
 
     hideMenu();
+    
   }
 
 
@@ -306,6 +297,7 @@ if (editingSticky) {
     task.classList.add(`text-${textColor}`);
 
     editingSticky = null; 
+    saveTasks();
 
 } else { 
 
@@ -324,6 +316,8 @@ if (editingSticky) {
  
 let next = data.length - 1 ;
 populate(data[next]) ;
+
+saveTasks()
 }
 
 
@@ -349,6 +343,8 @@ function grouping() {
     hideGroupsMenu('close')
 
     reset("groups");
+
+    saveTasks()
     
   }
 
@@ -428,6 +424,7 @@ groups.forEach(group => {
     if (input === group.groupName) {
       groups = groups.filter(group => group.groupName !== input )
      repopulateGroups()
+     saveTasks()
     } 
 });
 
@@ -441,14 +438,20 @@ function deleteTasks() {
     let input = document.getElementById("deleteTaskInput").value
     if (input === "DELETE"){
     data = data.filter(task => task.checkbox !== "true");
-    reloadTasks();} else {
+    reloadTasks()
+    saveTasks()
+    ;} else {
         window.alert("LOUD INCORRECT BUZEER")
     }
 
     hideTasksDeleteMenu('close');
 }
 
- 
+ window.setInterval(function() {
+
+// getTasks()
+
+ }, 1000)
 
 
 window.addEventListener("load", () => {runData()});
