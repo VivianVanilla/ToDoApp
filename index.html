@@ -8,51 +8,88 @@
       integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous" />
     <script src="scripts/index.js" defer> </script>
 </head>
-<body class="flex bg-[#1A0629] text-white w-screen h-screen">
+<body class="flex bg-[#1A0629] text-white ">
 
 
-  <div class="flex flex-col  ">
-    <div class=" flex flex-col bg-[#533767] h-screen justify-between">
-      <div class="flex gap-3"><button class="cursor-pointer">Add a group</button></div>
-
-      <div class="flex gap-3 flex-col"><button class="select-none cursor-pointer" onclick="runData()"> Add a Task</button>
-        <button class="cursor-pointer">Clear Tasks</button>
-      </div>
-    </div>
-
-
-
+  <div class="flex flex-col border-gray-400 border-2 p-1 ">
     <div>
-      <h2> </h2>
+      <div class="flex gap-3 flex-col ">
+        <button class="select-none cursor-pointer hover:text-blue-600 " onclick="hideMenu()"> Add a
+          Task</button>
+        <button class="cursor-pointer hover:text-blue-600" onclick="hideTasksDeleteMenu()">Clear Tasks</button>
+        <button class="cursor-pointer hover:text-blue-600" onclick="hideGroupsMenu()">Add a group</button>
+        <button class="cursor-pointer hover:text-blue-600" onclick="hideGroupsDeleteMenu()"> Delete Group</button>
+      </div>
+      <br>
+      <h3 class="text-center text-3xl">Groups</h3>
+    </div>
+    <div class="flex flex-col">
+      <button class="text-cyan-300 cursor-pointer hover:text-blue-600" onclick="repopulate(event)" id="All">All
+        Stickies</button>
+      <div data-groups-container class=" flex flex-col">
+      </div>
+      <template data-group-template>
+        <div class=" text-center"> <button onclick=" repopulate(event)"
+            class="text-cyan-300 hover:text-blue-600 button cursor-pointer"></button>
+      </template>
+    </div>
+    </div>
+    </div>
     </div>
   </div>
 
   </div>
 
   <main data-sticky-container class="main w-screen h-screen flex flex-col relative">
-
-
-    <div id="addtask"
-      class=" bg-[#6D5281]  gap-3 position absolute p-5 border white 5px text-black w-1/2 m-auto self-center flex flex-col">
-      <input id="title" type="text" maxlength="18" placeholder="Title your thing!">
-      <input id="task" type="text" placeholder="Write Something!">
-      <label for="color"> Sticky Color </label>
-      <input id="color" type="color" class="colorPicker"> </input>
-      <label for="text-color"> Text Color </label>
-      <select id="text-color" class="">
-        <option id="white " value="white">white</option>
-        <option id="black" value="black">black</option>
-      </select>
-        <input type="submit" onclick="saveNewData()" class=" border-black border-2 cursor-pointer active:bg-amber-100">
-
+    <i class="fa fa-trash self-end"> </i>
+    </main>
+    <div id="deleteTasks"
+      class=" invisible bg-pink-400 mx-85  mt-50 gap-3 position absolute p-5 border white 5px text-black w-1/2 m-auto  flex flex-col">
+      <i class="fa fa-window-close " onclick="hideTasksDeleteMenu('close')"></i>
+      <input id="deleteTaskInput" type="text" maxlength="12" placeholder="Write 'DELETE' to delete all your marked tasks">
+      <button type="button" onclick="deleteTasks()"
+        class=" border-black border-2 cursor-pointer active:bg-amber-100">Delete</button>
     </div>
-    <div class="w-max h-max">
+    <div id="deleteGroups"
+      class=" invisible bg-gray-400 mx-85  mt-50 gap-3 position absolute p-5 border white 5px text-black w-1/2 m-auto  flex flex-col">
+      <i class="fa fa-window-close " onclick="hideGroupsDeleteMenu('close')"></i>
+      <input id="deleteGroupInput" type="text" maxlength="12" placeholder="Write the name of the group you wish to delete">
+      <button type="button" onclick="deleteGroups()"
+        class=" border-black border-2 cursor-pointer active:bg-amber-100">Delete</button>
+    </div>
+    <div id="addGroup"
+      class=" invisible bg-white mx-85  mt-10 gap-3 position absolute p-5 border white 5px text-black w-1/2 m-auto  flex flex-col">
+      <i class="fa fa-window-close " onclick="hideGroupsMenu('close')"></i>
+      <input id="groupName" type="text" maxlength="12" placeholder="Create a Group!">
+      <button type="button" onclick="grouping()"
+        class=" border-black border-2 cursor-pointer active:bg-amber-100">Save</button>
+    </div>
+    <div id="addtask"
+  class=" invisible bg-[#6D5281] mx-85 mt-50 gap-3 position absolute p-5 border white 5px text-black w-1/2 m-auto self-center flex flex-col">
+  <i class="fa fa-window-close " onclick="hideMenu('close')"></i>
+  <input id="title" type="text" maxlength="18" placeholder="Title your thing!">
+  <input id="task" type="text" placeholder="Write Something!">
+  <label for="color"> Sticky Color </label>
+  <input id="color" type="color" class="colorPicker"> </input>
+  <label for="text-color"> Text Color </label>
+  <select id="text-color" class="">
+    <option id="white " value="white">white</option>
+    <option id="black" value="black">black</option>
+  </select>
+  <label for="group-option"> Choose a group </label>
+  <select id="group-option" class="">
+  
+  </select>
 
+    <button type="button" onclick="saveNewData()"
+      class=" border-black border-2 cursor-pointer active:bg-amber-100">Save</button></div>
+    </div>
+  
 
-  </main>
+        
   <template data-sticky-template class="">
 
-    <div draggable="" id="wrapper" class=" bg-gray-100 wrapper w-[26%] h-[9/10] rounded-2xl absolute">
+    <div draggable="" id="wrapper" class="wrapper bg-gray-100 wrapper w-[26%] h-[9/10] rounded-2xl absolute">
       <div id="header" class="p-6 border-gray-300 text-xl flex justify-between cursor-move">
         <span data-title class="select-none"> Window </span>
         <div id="actions" class="flex gap-3 cursor-pointer">
@@ -67,7 +104,7 @@
     rounded-sk bg-gray-700 cursor-pointer appearance-none " data-checkbox></input>
 </div>
 
-          <i class="fa fa-sliders-h"></i>
+          <i class="fa fa-sliders-h" id="settings"></i>
           <i class="fa fa-minus" onclick="toggleMinimize(event)"></i>
         </div>
       </div>
@@ -86,7 +123,7 @@
     </div>
     </div>
 </template>
-</div>
+
 
     
 </body>

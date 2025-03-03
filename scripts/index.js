@@ -1,21 +1,42 @@
 const stickyTemplate = document.querySelector("[data-sticky-template]");
 const stickyContainer = document.querySelector("[data-sticky-container]");
+const templateGroup = document.querySelector("[data-group-template]");
+const groupsContainer = document.querySelector("[data-groups-container]");
 let wrapper = document.querySelector("#wrapper");
 const mainRect = document.querySelector(".main").getBoundingClientRect();
+const menu = document.getElementById("addtask");
+const groupMenu = document.getElementById("addGroup");
+let groupOptions = document.getElementById("group-option")
+const deleteGroupsMenu = document.getElementById("deleteGroups")
+const deleteTasksMenu = document.getElementById("deleteTasks")
+let editingSticky = null;
 
 
-let data = [{checkbox: "true",
+let groups = [{groupName: "Evi"},
+    {groupName: "good"},
+]
+
+
+let data = [{
+    group: "Evi",
+    posX: 330,
+    posY: 312,
+    checkbox: "true",
     title:"MEOW",
     bgcolor: "#FFFFFF",
     textcolor: "black",
     content: "I need to finish my to do APP!" ,
-} , {checkbox: "false",
+} , { 
+    group: "Evi",
+    checkbox: "false",
     title:"BARK",
     bgcolor: "#985757",
     content: "I HATE CSS" ,
     textcolor: "black",
 } ,
-{checkbox: "false",
+{ 
+    group: "good",  
+    checkbox: "false",
     title:"beep",
     bgcolor: "#985097",
     content: "I HATE CSS" ,
@@ -24,8 +45,11 @@ let data = [{checkbox: "true",
 
 
 
+//Population and Movement
+
+
 let maxZInDex = 0;
-function makeDraggable(wrapper) {
+function makeDraggable(wrapper, positionData) {
     let isDragging = false;
     let offsetX = 0, offsetY = 0;
     
@@ -64,6 +88,8 @@ function makeDraggable(wrapper) {
         wrapper.style.left = `${newX}px`;
         wrapper.style.top = `${newY}px`;
 
+        positionData.posX = newX;
+        positionData.posX = newX;
       
     }
 
@@ -72,13 +98,30 @@ function makeDraggable(wrapper) {
     }
 }
 
- function runData() { data.forEach(populate) };
+function groupPopulating(info) {
+    const group = templateGroup.content.cloneNode(true).children[0];
+    const button = group.querySelector(".button")
+
+    button.id = `${info.groupName}`
+    button.textContent = info.groupName
+
+    groupsContainer.append(group)
+    return{groupName: info.groupName}
+
+}
+
+ function runData() { 
+    data.forEach(populate)
+    groups.forEach(groupPopulating)
+    boxOpacity() 
+ };
 
 function populate(info) {
 const task = stickyTemplate.content.cloneNode(true).children[0];
 const checkbox = task.querySelector("[data-checkbox]");
 const title = task.querySelector("[data-title]"); 
 const text = task.querySelector("[data-text]");
+const settings = task.querySelector("#settings");
 
 task.style.backgroundColor = `${info.bgcolor}`;
 task.classList.add(`text-${info.textcolor}`)
@@ -100,15 +143,30 @@ text.textContent = info.content;
 
 stickyContainer.append(task);
 
-const taskRect = task.getBoundingClientRect();
 
-const randomX = Math.floor(Math.random() *  (mainRect.width - taskRect.width )  );
-const randomY = Math.floor(Math.random() * (mainRect.height - taskRect.height )  );
 
-task.style.left = `${randomX}px`;
-task.style.top = `${randomY}px`; 
 
-makeDraggable(task); 
+makeDraggable(task, info); 
+
+if (info.posX !== undefined && info.posY !== undefined) {
+    task.style.left = `${info.posX}px`;
+    task.style.top = `${info.posY}px`;
+
+    console.log(info.posY, info.posX)
+} else {
+    const taskRect = task.getBoundingClientRect();
+    info.posX = Math.floor(Math.random() * (mainRect.width - taskRect.width));
+    info.posY = Math.floor(Math.random() * (mainRect.height - taskRect.height));
+    task.style.left = `${info.posX}px`;
+    task.style.top = `${info.posY}px`;
+
+    console.log(info.posY, info.posX)
+}
+
+settings.addEventListener('click', () => {
+    editSticky(task, info);
+    
+});
 
 return{checkbox: info.checkbox, title: info.title, element:task}
 
@@ -127,50 +185,270 @@ function toggleMinimize(event) {
     }
 }
 
+function boxOpacity() {
+    let wrapper = document.querySelectorAll(".wrapper");
+    wrapper.forEach(wrappy => {
+        
+        let checkbox = wrappy.querySelector(".checkbox").checked
+        console.log(checkbox)
+        if (checkbox === true ) {
+            wrappy.classList.add("opacity-50")
+            
+        } else if (checkbox === false) {
+            wrappy.classList.remove("opacity-50")
+        }
+    }) }
+
 function completedBox(event) {
     let wrapper = event.target.closest("#wrapper");
     let checkbox = wrapper.querySelector(".checkbox").checked;
-if (checkbox === true ) {
-    wrapper.classList.add("opacity-50")
+    let title = wrapper.querySelector("[data-title]").innerHTML;
+
     
-} else if (checkbox === false) {
-    wrapper.classList.remove("opacity-50")
+        if (checkbox === true ) {
+            wrapper.classList.add("opacity-50")
+            
+        } else if (checkbox === false) {
+            wrapper.classList.remove("opacity-50")
+        }
+    
+let task = data.find(task => task.title === title);
+
+task.checkbox = checkbox.toString();
+
+
 }
-console.log(checkbox)
+
+function removeAll() { 
+    while (stickyContainer.firstChild) {
+        stickyContainer.removeChild(stickyContainer.firstChild);
 }
+}
+
+let lastClickedGroup = "All"; 
+
+function repopulate(event) { 
+    lastClickedGroup = event.target.id; 
+    reloadTasks();
+    boxOpacity();
+}
+
+function reloadTasks() {
+    removeAll(); 
+
+    if (lastClickedGroup !== "All") {
+        data.forEach(task => {
+            if (lastClickedGroup === task.group) {
+                populate(task);
+            }
+        });
+    } else {
+        data.forEach(populate);
+    }
+}
+
+
+function repopulateGroups() {
+    while (groupsContainer.firstChild) {
+        groupsContainer.removeChild(groupsContainer.firstChild);
+}
+
+groups.forEach(groupPopulating)
+
+}
+
+//Save and Edit Area
+
+function editSticky(task, info) {
+    editingSticky = {task, info};
+
+    document.getElementById("title").value = info.title;
+    document.getElementById("task").value = info.content;
+    document.getElementById("color").value = info.bgcolor;
+    document.getElementById("text-color").value = info.textcolor;
+
+    hideMenu();
+  }
+
+
+
 
 
 function saveNewData() {
+
+
 let title = document.getElementById("title").value;
 let content = document.getElementById("task").value;
 let bgcolor = document.getElementById("color").value;
 let textColor = document.getElementById("text-color").value;
+let group = document.getElementById("group-option").value;
 let checkbox = "false";
 
+
+
+
+if (editingSticky) {
+   
+    let { task, info } = editingSticky;
+
+
+    info.title = title;
+    info.content = content;
+    info.bgcolor = bgcolor;
+    info.textcolor = textColor;
+    info.group = group;
+
+
+    task.querySelector("[data-title]").textContent = title;
+    task.querySelector("[data-text]").textContent = content;
+    task.style.backgroundColor = bgcolor;
+    task.classList.remove("text-white", "text-black"); 
+    task.classList.add(`text-${textColor}`);
+
+    editingSticky = null; 
+
+} else { 
+
     class NewData { 
-        constructor(checkbox, title, content, bgcolor, textColor) {
+        constructor(checkbox, title, content, bgcolor, textColor, group) {
            this.checkbox = checkbox;
            this.title = title;
            this.content = content;
-           this.bgcolor = bgcolor
-           this.textcolor = textColor
-
+           this.bgcolor = bgcolor;
+           this.textcolor = textColor;
+           this.group = group;
         }
     }
-
-let tempData = new NewData(checkbox, title, content, bgcolor, textColor)
- console.log(tempData)
+    let tempData = new NewData(checkbox, title, content, bgcolor, textColor,group)
  data.push(tempData)
+ 
+let next = data.length - 1 ;
+populate(data[next]) ;
+}
 
- populate(tempData)
 
-function reset() {
 
+hideMenu('close')
+
+}
+
+function grouping() {
+    let groupName =  document.getElementById("groupName").value;
+  
+
+    class NewGroup  {
+        constructor(groupName) {
+            this.groupName = groupName
+        }
+    }
+    let tempGroup = new NewGroup(groupName);
+    groups.push(tempGroup);
+    let nextGroup = groups.length - 1; 
+    console.log(nextGroup)
+    groupPopulating(groups[nextGroup]);
+    hideGroupsMenu('close')
+
+    reset("groups");
+    
+  }
+
+function reset(reset) {
+    
+    if (reset === "task") {
     document.getElementById("title").value = "";
     document.getElementById("task").value = "";
     document.getElementById("color").value = "#000000";
-    document.getElementById("text-color").value = "black"; }
-reset()
+    document.getElementById("text-color").value = "white"; 
+    document.getElementById("deleteTaskInput").value = ""; 
+    editingSticky = null; } else if (reset === "groups") {
+        document.getElementById("groupName").value = "";
+        document.getElementById("deleteGroupInput").value = "";
+    }
+ 
 }
+
+function hideMenu(value) {
+
+
+    while (groupOptions.firstChild) {
+         groupOptions.removeChild(groupOptions.firstChild)
+    }
+
+    groups.forEach((options) => {
+        let option = document.createElement("option")
+        option.textContent = options.groupName;
+        groupOptions.appendChild(option) 
+    })
+
+    if(menu.classList.contains("invisible")) {
+        menu.classList.toggle("invisible") 
+    } else if (value === "close") {
+        menu.classList.add("invisible")
+        reset('task')
+    }
+}
+
+function hideGroupsMenu(value) {
+
+    if(groupMenu.classList.contains("invisible")) {
+        groupMenu.classList.toggle("invisible") 
+    } else if (value === "close") {
+        groupMenu.classList.add("invisible")
+        reset('groups')
+    }
+}
+
+
+function hideGroupsDeleteMenu(value) {
+
+    if(deleteGroupsMenu.classList.contains("invisible")) {
+        deleteGroupsMenu.classList.toggle("invisible") 
+    } else if (value === "close") {
+        deleteGroupsMenu.classList.add("invisible")
+        reset('groups')
+    }
+}
+
+function hideTasksDeleteMenu(value) {
+
+    if(deleteTasksMenu.classList.contains("invisible")) {
+        deleteTasksMenu.classList.toggle("invisible") 
+    } else if (value === "close") {
+        deleteTasksMenu.classList.add("invisible")
+        reset('task')
+    }
+}
+
+//Delete groups and tasks 
+
+function deleteGroups() {
+let input = document.getElementById("deleteGroupInput").value
+ 
+groups.forEach(group => {
+    if (input === group.groupName) {
+      groups = groups.filter(group => group.groupName !== input )
+     repopulateGroups()
+    } 
+});
+
+hideGroupsDeleteMenu('close')
+
+
+}
+
+
+function deleteTasks() {
+    let input = document.getElementById("deleteTaskInput").value
+    if (input === "DELETE"){
+    data = data.filter(task => task.checkbox !== "true");
+    reloadTasks();} else {
+        window.alert("LOUD INCORRECT BUZEER")
+    }
+
+    hideTasksDeleteMenu('close');
+}
+
+ 
+
 
 window.addEventListener("load", () => {runData()});
