@@ -12,8 +12,7 @@ const deleteTasksMenu = document.getElementById("deleteTasks")
 let editingSticky = null;
 
 
-let groups = [
-]
+let groups = []
 
 
 let data = [];
@@ -26,10 +25,17 @@ function saveTasks() {
 }
 
 function getTasks() {
-    data = JSON.parse(localStorage.getItem("tasks"));
-    groups = JSON.parse(localStorage.getItem("groups"));
-    console.log(groups)
 
+    let localData = JSON.parse(localStorage.getItem("tasks"));
+   let localGroups = JSON.parse(localStorage.getItem("groups"));
+  
+    if (localData !== null ) {    data = JSON.parse(localStorage.getItem("tasks"));     
+    } 
+  
+   
+   if (localGroups !== null ) {   groups = JSON.parse(localStorage.getItem("groups"));    
+   } 
+ 
 }
 
 
@@ -446,12 +452,6 @@ function deleteTasks() {
 
     hideTasksDeleteMenu('close');
 }
-
- window.setInterval(function() {
-
-// getTasks()
-
- }, 1000)
 
 
 window.addEventListener("load", () => {runData()});
